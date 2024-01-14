@@ -7,10 +7,9 @@ let cards = [];
 let player1ScoreElement = document.getElementById("player1-score");
 let player2ScoreElement = document.getElementById("player2-score");
 
-function startGame() {
-    //resetGame();
 
-    pairs = document.getElementById("pairs").value;
+function startGame() {
+     pairs = 8;
     generateCards();
     renderGameBoard();
     document.getElementById("game-board").classList.remove("hidden");
@@ -31,7 +30,6 @@ function generateCards() {
         cards.push(`./images/${images[i]}`);
     }
 
-    // Shuffle the cards array to randomly place the images
     cards = shuffleArray(cards);
 }
 
@@ -73,11 +71,29 @@ function shuffleArray(array) {
     return array;
 }
 
+function ComputersTurn() {
+    // Simulate the computer's move by flipping a random card after a delay
+    setTimeout(() => {     
+        let cardsLeft = ((pairs - flippedCards.length) * 2);  
+        if (cardsLeft >1) {
+            const randomIndex = Math.floor(Math.random() * cardsLeft);
+            console.log(cardsLeft);
+            console.log(randomIndex);
+
+
+            // Check for a match after the computer's move
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+    }, 1000);
+
+}
+
 function flipCard(card) {
     const index = parseInt(card.dataset.index);
-
     // Check if the card is already flipped or if it's non-matching
-    if (!flippedCards.includes(index) && flippedCards.length < 2) {
+        if (!flippedCards.includes(index) && flippedCards.length < 2) {
         // Show the image
         card.firstChild.style.display = "block";
 
@@ -87,6 +103,7 @@ function flipCard(card) {
             setTimeout(checkMatch, 1000);
         }
     }
+    
 
     // If two non-matching cards are flipped, reset them after a short delay
     if (flippedCards.length === 2 && cards[flippedCards[0]] !== cards[flippedCards[1]]) {
@@ -173,6 +190,11 @@ function checkMatch() {
             
             // Switch to the next player's turn
             currentPlayer = currentPlayer === 1 ? 2 : 1;
+            if (currentPlayer === 2){
+                ComputersTurn() 
+                isComputerTurn = true
+            }
+
             document.getElementById("current-player").innerText = `Speler ${currentPlayer} is aan de beurt`;
             
             // Change the border color based on the active player
